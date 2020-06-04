@@ -1,4 +1,4 @@
-
+from nltk.tokenize import sent_tokenize, word_tokenize 
 import pandas as pd
 import numpy as np
 import pickle
@@ -23,7 +23,7 @@ def data_input_preprocess(filename):
         f = f.replace(emoji, emoji+" ")
     return f
 
-def data_tokenize(f)
+def data_tokenize(f):
     data = [] 
     # iterate through each sentence in the file 
     for i in sent_tokenize(f): 
@@ -33,7 +33,8 @@ def data_tokenize(f)
         for j in word_tokenize(i): 
             temp.append(j.lower()) 
 
-        data.append(temp) 
+        data.append(temp)
+    return data
         
 # move to helper
 def emoji_prodictor(word, model):
@@ -46,7 +47,7 @@ def emoji_prodictor(word, model):
 ########### Scoring ############
     
 # load the ground-truth
-with open('data/val_dict2.pickle', 'rb') as handle:
+with open('val_dict2.pickle', 'rb') as handle:
     val_dict = pickle.load(handle)
   
 # define score function 
