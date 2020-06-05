@@ -27,32 +27,36 @@ app.layout = html.Div([
                                             "text-align": "center" ,
                                             }),
     html.H2('Author✍️: Vince Pan👨‍🔬', style={'color': "black",
-                                             "padding": "10px",
+                                            "padding": "10px",
                                             "font-size": "30px",
                                             "font-family": "Lucida Console",
                                             "text-align": "right" ,
                                             }), 
     html.Div('Type in ⌨️ or Paste 📋 below🔽', style={'color': "black",
+                                                    "padding": "10px",
                                                     "font-size": "20px",
                                                     "font-family": "Lucida Console",
                                                     "text-align": "left" ,
                                                     'width': '60%', 
                                                     'display': 'inline-block'}), #notice style variable which wants a dict of CSS
     html.Div(dcc.Dropdown(
+                        id='method-dropdown',
                         options=[
-                            {'label': 'Default: Keep', 'value': 'K'},
+                            {'label': 'Method for unpredictable word: (Default) Keep', 'value': 'K'},
                             {'label': 'Remove', 'value': 'R'},
                             {'label': 'Keep placeholder', 'value': 'H'},
                         ],
                         placeholder="Method for unpredictable word: Keep",
+                        value='K'
                         ) ,
              style={'width': '30%',
+                    "padding": "10px",
                     'display': 'inline-block',
                     "text-align": "center"}), 
 
     dcc.Textarea(
                     id='input_text',
-                    value='I love emoji',
+                    value='Head, shoulders, knees and toes',
                     style={'width': '100%', 'height': 200},
                 ),
     html.Div(id='emoji_output', style={'whiteSpace': 'pre-line',
@@ -71,11 +75,14 @@ app.layout = html.Div([
 
 @app.callback(
     Output('emoji_output', 'children'),
-    [Input('input_text', 'value')]
+    [Input('input_text', 'value'),
+    Input('method-dropdown', 'value')
+    ]
 )
-def update_output(value):
+def update_output(value,option):
     cmd = ['python', 'translator.py']
     cmd.append(value)
+    cmd.append(option)
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     outputs = ""
     for line in p.stdout.readlines():
@@ -84,7 +91,7 @@ def update_output(value):
     print(outputs)
 
 
-    return ("In emoji world, you say \n" + outputs)
+    return ("In emoji world, you say: \n \n" + outputs)
 
 
 # --------------------------------------------------------- #

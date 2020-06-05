@@ -4,6 +4,7 @@ from src.helper import *
 from nltk.corpus import stopwords
 
 input = sys.argv[1]
+option = sys.argv[2]
 # input = "Type in the box."
 
 # imports modules
@@ -22,6 +23,7 @@ with open('gt.pickle', 'rb') as f:
 
 stop_words = set(stopwords.words('english')) 
 stop_words.add("really")
+stop_words.add("always")
 
 # ensemble model determine by threshold
 def ensemble_emoji_prodictor(word, model1, model2, thres):
@@ -46,8 +48,16 @@ def predict_sentense(s):
         s = s.replace(note, "")
     out = ""
     for c in s.lower().split(" "):
-        out += " "
-        out += ensemble_emoji_prodictor(c, model1, model2, thres)
+        prediction = ensemble_emoji_prodictor(c, model1, model2, thres)
+        if c != prediction:
+            out += " "
+            out += ensemble_emoji_prodictor(c, model1, model2, thres)
+        else:
+            if option == "K":
+                out += " "
+                out += ensemble_emoji_prodictor(c, model1, model2, thres)
+            elif option == "H":
+                out += " [   ]"
     return out
 
 def predict_para(p):
