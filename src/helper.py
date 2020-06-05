@@ -8,6 +8,9 @@ import pickle
 val_df = pd.read_csv("data/emoji_val.2csv",index_col=0)
 emoji_list = val_df["emoji"].values.tolist()
 
+non_zero_count = 1436
+thres = 0.44
+
 def data_input_preprocess(filename):
     # read
     sample = open(filename, "r") 
@@ -38,11 +41,25 @@ def data_tokenize(f):
         
 # move to helper
 def emoji_prodictor(word, model):
-    sim = model.most_similar(word,topn=75)
-    for i in sim:
-        if i[0] in emoji_list:
-            return i[0]
+    if word in model.wv:
+        sim = model.most_similar(word,topn=75)
+        for i in sim:
+            if i[0] in emoji_list:
+                return i[0]
+
     return word
+
+# ensemble model determine by threshold
+def ensemble_emoji_prodictor(word, model1, model2, thres):
+    p1 = emoji_prodictor(word, model1)
+    p2 = emoji_prodictor(word, model2)
+    t = int(thres*non_zero_count)
+    l1 = list(sort_freq.keys())[:t]
+    l2 = list(sort_freq.keys())[t:]
+    if p2 in l2:
+        return p2
+    else:
+        return p1
         
 ########### Scoring ############
     
@@ -100,7 +117,27 @@ def emoji_prodictor_restricted(word, model, thres_n_word=75, thres_corr=0):
     return word
 
 
-
+def word2vec_score_emsemble(val_dict,model1, model2, thres):
+    total_words = 0
+    total_predicts = 0
+    correct = 0
+    words = []
+    word_vectors = model1.wv
+    for word in val_dict:
+#         print(word)
+        if word:
+            w = word.lower()
+            words.append(w)
+            if w in word_vectors:
+                total_words += 1
+                pred = ensemble_emoji_prodictor(w, model1, model2, thres)
+                if pred in val_dict[word]:
+                    correct += 1
+                    total_predicts += 1
+                elif pred in emoji_list:
+                    total_predicts += 1
+    return correct/total_words, correct/total_predicts, words
+            
 
     
     
