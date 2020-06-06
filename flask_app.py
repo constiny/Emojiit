@@ -5,6 +5,7 @@ import dash_daq as daq
 from dash.dependencies import Input, Output, State
 import pickle
 import subprocess
+import ast
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -12,7 +13,6 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # model = pickle.load(open('src/final_model.pkl', 'rb'))
 
 # --------------------------------------------------------- #
-
 # --------------------------------------------------------- #
 
 # App layout
@@ -63,35 +63,65 @@ app.layout = html.Div([
                                         "padding": "10px",
                                         'color': "black",
                                         "font-size": "20px",
-                                        "font-family": "Lucida Console",})                                        
+                                        "font-family": "Lucida Console",}),
+    html.Div('Unsatisfied with the translation? Report it.',
+                style={"padding": "10px"}),
+    html.Button('Report', id='submit-val', n_clicks=0),
+    html.Div(id='container-button-basic',
+            children='Enter a value and press submit',
+            style={"padding": "10px"}),
+    dcc.RadioItems(
+        id='intermediate-value'
+    ),                                       
 
 ])
 
 
 # --------------------------------------------------------- #
+@app.callback(
+    dash.dependencies.Output('container-button-basic', 'children'),
+    [dash.dependencies.Input('submit-val', 'n_clicks')])
+def update_output(n_clicks):
+    if n_clicks > 0:
+        return "Please pick the translation you suggest to change."
+    else:
+        return ""
 # --------------------------------------------------------- #
 # --------------------------------------------------------- #
 
 
 @app.callback(
-    Output('emoji_output', 'children'),
+
+    [Output('emoji_output', 'children'),
+     Output('intermediate-value', 'options')],
+
     [Input('input_text', 'value'),
-    Input('method-dropdown', 'value')
+    Input('method-dropdown', 'value'),
+    Input('submit-val', 'n_clicks')
     ]
 )
-def update_output(value,option):
+def update_output(value, option, n_clicks):
     cmd = ['python', 'translator.py']
     cmd.append(value)
     cmd.append(option)
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     outputs = ""
-    for line in p.stdout.readlines():
+    p_out = p.stdout.readlines()
+    for line in p_out[:-1]:
         outputs += line.decode("utf-8") 
-        # outputs.append(line)
-    print(outputs)
+    s1 = ("In emoji world, you say: \n \n" + outputs)
+    d = ast.literal_eval(p_out[-1].decode("utf-8"))
+    opt = []
+    # print(d)
+    # print(type(d))
+    if n_clicks > 0:
+        for k, v in d.items():
+            transl = f"{k} - {v}"
+            d2 = {'label': transl, 'value': transl}
+            opt.append(d2)
 
 
-    return ("In emoji world, you say: \n \n" + outputs)
+    return s1, opt
 
 
 # --------------------------------------------------------- #

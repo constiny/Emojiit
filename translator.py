@@ -25,6 +25,9 @@ stop_words = set(stopwords.words('english'))
 stop_words.add("really")
 stop_words.add("always")
 
+# translate words stores
+d_out = {}
+
 # ensemble model determine by threshold
 def ensemble_emoji_prodictor(word, model1, model2, thres):
     if word in gt:
@@ -49,9 +52,13 @@ def predict_sentense(s):
     out = ""
     for c in s.lower().split(" "):
         prediction = ensemble_emoji_prodictor(c, model1, model2, thres)
+        if c not in d_out:
+            d_out[c] = prediction
         if c != prediction:
             out += " "
             out += ensemble_emoji_prodictor(c, model1, model2, thres)
+            if c not in d_out:
+                d_out[c] = prediction
         else:
             if option == "K":
                 out += " "
@@ -69,3 +76,7 @@ def predict_para(p):
     return out
 
 print(predict_para(input))
+print(d_out)
+
+with open('temp.pickle', 'wb') as f:
+    pickle.dump(d_out, f)
