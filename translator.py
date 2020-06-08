@@ -9,16 +9,16 @@ option = sys.argv[2]
 
 # imports modules
 
-with open('emoji_order_by_freq.pkl', 'rb') as f:
+with open('pkl/emoji_order_by_freq.pkl', 'rb') as f:
     emoji_rank = pickle.load(f)
 
-with open('cbow.pkl', 'rb') as f:
+with open('pkl/cbow.pkl', 'rb') as f:
     model1 = pickle.load(f)
 
-with open('sg.pkl', 'rb') as f:
+with open('pkl/sg.pkl', 'rb') as f:
     model2 = pickle.load(f)
 
-with open('gt.pickle', 'rb') as f:
+with open('pkl/gt.pickle', 'rb') as f:
     gt = pickle.load(f)
 
 stop_words = set(stopwords.words('english')) 
@@ -52,8 +52,6 @@ def predict_sentense(s):
     out = ""
     for c in s.lower().split(" "):
         prediction = ensemble_emoji_prodictor(c, model1, model2, thres)
-        if c not in d_out:
-            d_out[c] = prediction
         if c != prediction:
             out += " "
             out += ensemble_emoji_prodictor(c, model1, model2, thres)
@@ -78,5 +76,3 @@ def predict_para(p):
 print(predict_para(input))
 print(d_out)
 
-with open('temp.pickle', 'wb') as f:
-    pickle.dump(d_out, f)

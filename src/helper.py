@@ -5,8 +5,11 @@ import pickle
 
 # move to helper
 # load emoji list
-val_df = pd.read_csv("data/emoji_val.2csv",index_col=0)
+val_df = pd.read_csv("data/emoji_val.csv",index_col=0)
 emoji_list = val_df["emoji"].values.tolist()
+
+with open('pkl/sort_freq.pkl', 'rb') as f:
+    sort_freq = pickle.load(f)
 
 non_zero_count = 1436
 thres = 0.44
@@ -40,14 +43,23 @@ def data_tokenize(f):
     return data
         
 # move to helper
+# def emoji_prodictor(word, model):
+#     if word in model.wv:
+#         sim = model.most_similar(word,topn=75)
+#         for i in sim:
+#             if i[0] in emoji_list:
+#                 return i[0]
+
+#     return word
+
 def emoji_prodictor(word, model):
     if word in model.wv:
-        sim = model.most_similar(word,topn=75)
+        sim = model.most_similar(word,topn=60)
         for i in sim:
-            if i[0] in emoji_list:
+            if i[0] in emoji_list and i[1]>0.4:
                 return i[0]
-
     return word
+
 
 # ensemble model determine by threshold
 def ensemble_emoji_prodictor(word, model1, model2, thres):
@@ -64,7 +76,7 @@ def ensemble_emoji_prodictor(word, model1, model2, thres):
 ########### Scoring ############
     
 # load the ground-truth
-with open('val_dict2.pickle', 'rb') as handle:
+with open('pkl/val_dict3.pickle', 'rb') as handle:
     val_dict = pickle.load(handle)
   
 # define score function 
