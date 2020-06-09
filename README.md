@@ -66,6 +66,8 @@ The model will be applied on an AWS EC2 instance in the form of a Web App done w
 
 ## Source
 
+### Twitter Data
+
 There are various internet platforms like Facebook, Twitter, Instagram, where people heavily using emojis to make friend, chitchat and express their feelings. Here we utilized a **Twitter** dataset collected millions of tweets that contain at least one emoji.
 
 * Original Site: Twitter
@@ -74,9 +76,28 @@ There are various internet platforms like Facebook, Twitter, Instagram, where pe
 Sample Tweet
 
 > That’s awesome! Plus you’re a Meredith Angel!!😇🤗😉
+
 > Happy Birthday 🎊❤️
 
-**Source** See [Appendix - Data Source](#DataSource)
+**Data Source** See [Appendix - Data Source](#DataSource)
+
+### Ground Truth
+
+The usage of a Ground Truth in building a translator is to benchmark how well you predict which also develops the metrics accuracy for comparing models.
+
+Our Ground Truth data was webscraping from various emoji set which has their own emoji meanings.
+
+For example, ☁️ in Emojipedia.com
+
+has 3 meanings
+
+> Cloud, Cloudy, Overcast
+
+We webstraped the meanings for all emojis and set it as our Ground Truth data(Sometimes Grouth Truth Knowledge). We say the prediction is correct if the translate "cloud" to ☁️. The accuracy metric we use later is design as how many percentage of words in the ground Truth data was predicted correctly.
+
+
+**Ground Truth** See [Appendix - Data Source](#DataSource)
+
 
 ## EDA
 
@@ -84,23 +105,19 @@ Let's take a quick look at the data.
 
 * Size: 18,866,900 records
 * 11.1 words per tweet
-3.8 emoji per tweet*
-2,890 Unique Emojis
+* 3.8 emoji per tweet*
+* 2,890 Unique Emojis
 
-| Word 1 | Word 2 ... Word n-1 | Word n |
+Note:multiple Emoji connected with each other without space treated as one word
+
+| Word_1 | Word_2 ... Word_(n-1) | Word_n |
 |:------:|:-------------------:|:------:|
 |   9%   |         31%         |   59%  |
 
+Most emojis come in the last word of a tweet.
 
+33
 
-Data Collection:                                                                                                 Chart: Project Workflow
-19 million Twitter records contain at least one Emoji
-Web Scraping Emoji “true meaning” from various Emoji website as Ground Truth knowledge
-Text Processing:
-Lower all cases
-Remove punctuation
-Try remove stop words
-Try Stemmer and Lemmetizer
 Model building:
 Processed text into a two-layer Nereul Network called Word2Vec
 Tuned model hyperparameters in a small sample
