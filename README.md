@@ -9,10 +9,10 @@ By Vince Pan
 
 # Table of Contents📝
 
-[1. ⁉️Motivation](#motivation)<br> 
+[1. Background](#motivation)<br> 
 [2. Data](#DATA)<br> 
->   [2.1. A](#DATA)<br>
->   [2.2. B](#Dataacquisition)<br>
+>   [2.1. Source](#DATA)<br>
+>   [2.2. EDA](#EDA)<br>
     
 [3. EDA](#EDA)
 
@@ -99,7 +99,7 @@ We webstraped the meanings for all emojis and set it as our Ground Truth data(So
 **Ground Truth** See [Appendix - Data Source](#DataSource)
 
 
-## EDA
+## EDA<a id="EDA"> </a>
 
 Let's take a quick look at the data.
 
@@ -116,42 +116,47 @@ Note:multiple Emoji connected with each other without space treated as one word
 
 Most emojis come in the last word of a tweet.
 
-33
+<img>
 
-Model building:
-Processed text into a two-layer Nereul Network called Word2Vec
-Tuned model hyperparameters in a small sample
-Tuned model with text processing techniques in a small sample
-Built 2 Word2Vec algorithms.  CBOW and skip-gram have different advantages in predicting common or rare words.                                           
-Ensembled two algorithms with a threshold to determine which word is frequent.
-The final Model recorded 62% accuracy in predicting the Ground Truth, improved 55% compared to baseline(7%).
-Web APP:
-Built a real-time translation Web App with Dash
-Published on an AWS EC2 instance
-Collecting user feedback into SQL database which able us to adjust the model regularly
+😂 is not only the most frequent emoji but also has a higher frequency than any English words including "the".
+Fun fact: Oxford Dictionaries named 😂 as 2015 Word of the Year.
 
-## Data acquisition
-<a id="Dataacquisition"> </a>
-
-
-### Pipeline
-
-
-
-------------------------
-
-# EDA<a id="EDA"> </a>
-
--------------------
-## EDA on Case Data<a id="case"> </a>
-
-----------------
-
-----------------
 
 # Model<a id="model"> </a>
 
+The technique we use in this model is called **Word2Vec** which is a two-layer Nereul Network. In simple, it vectorizes word(corpus) into numerical vectors by exploring the relationship between a target word and the neighborhood words(window). After that, we can find out the most similar emoji and English word.
 
+> Word2vec is a group of related models that are used to produce word embeddings. These models are shallow, two-layer neural networks that are trained to reconstruct linguistic contexts of words. Word2vec takes as its input a large corpus of text and produces a vector space, typically of several hundred dimensions, with each unique word in the corpus being assigned a corresponding vector in the space. Word vectors are positioned in the vector space such that words that share common contexts in the corpus are located close to one another in the space. -Wikipedia
+
+The word2vec model was developed by Google and easy to run in various language environment. However, it is not a straight foward work to finish well. 
+
+
+## Tuning<a id="model"> </a>
+
+In python, `work2vec` was built in the Gensim package. Here is part of the tunning history of our model in small sample.
+
+<tunning history>
+    
+We can see there is % improvement from the first model to the latest tuned. More sensitive than other NLP models, text processing step in word2vec contributed a high portion in the improvement.
+
+## Ensemble<a id="model"> </a>
+
+We can see above models tuning history, the CBOW and Skip-gram are two algorithm we can adopt in the model which have similar scores. The different between them are CBOW is using neiborhood to predict target work while skip-gram on the opposite.
+
+
+<img CBOW and Skip-gram >
+
+The difference between them makes them tends to predict common words(CBOW) and rare words(Skip-gram) which can be seen if we weighted our accuracy by word frequency. There is a famous quoto in Chinese.
+
+> Only kids make choice. Adults get both.
+
+Ensembling could help us on that. The idea of ensemble models is we can merge two bad model into a faily good model. The way we ensemble these two model by a threshold determine which word should be frequent and rare.
+
+<ensemble plot>
+
+The final Model recorded 62% accuracy in predicting the Ground Truth, improved 55% compared to baseline(7%).
+
+# Go Live<a id="model"> </a>
 
 ----------------
 
