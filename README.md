@@ -25,16 +25,16 @@ By Vince Pan
 [7. Appendix](#Appendix)
 
 -----------------------
-# ⁉️Motivation
+# Background
 <a id="motivation"> </a>
 
-## Background
+## Movitation
 
 > Originating on Japanese mobile phones in 1997, emoji became increasingly popular worldwide in the 2010s after being added to several mobile operating systems.
 
 In 2020-01-29, the most recent version Emoji 13.0 was released with 117 new emojis which sum up to 3,304 emojis in total.
 
-Although 3,000 doesn't seem like a big number, emojis have rich meanings and easily understood by people from different background. For instance, here is a example of behavior recommendation under COVID-19.
+Although 3,000 doesn't seem like a big number, emojis have rich meanings and easily understood by people from different background. For instance, here is a example of behavior guideline under COVID-19.
 
 👑🦠            (Coronavirus)
 
@@ -44,50 +44,74 @@ Although 3,000 doesn't seem like a big number, emojis have rich meanings and eas
 * 🧼🖐⏲        (Wash your hands regularly)
 * 🚇😷🛒        (Wearing a mask in public)
 
+Above emoji sentenses are easy to read and understood by people with different culture background. However, it is not easy to come up the correct emojis you can use to express yourself concisely.
 
 ## Goal
 
+Our objective is to provide a solution to translate sentences from English to Emojis.
 
+## Project Setup
 
+The idea underneathe is we can let machine learn from how people use emoji on internet and compare with how they use English words. If they use a specific emoji and a certain word in the same situation, we believe they are substitable.
+
+We are going to use an two-layer Nereul Network called **Word2Vec** and build two models based on CBOW and Skip-gram. After that, we tuned the models by comparing our predicting result with a ground truth dataset from web-scraping and ensemble them together to achieve the final model.
+
+The model will be applied on an AWS EC2 instance in the form of a Web App done with Dash. The app also collects user feedback into SQL database which able us to adjust the model regularly.
+
+<img workflow>
 
 ----------------
 
 # DATA
 
-## Where do we get data?
+## Source
 
+There are various internet platforms like Facebook, Twitter, Instagram, where people heavily using emojis to make friend, chitchat and express their feelings. Here we utilized a **Twitter** dataset collected millions of tweets that contain at least one emoji.
 
+* Original Site: Twitter
+* Feature: Only text content
+
+Sample Tweet
+
+> That’s awesome! Plus you’re a Meredith Angel!!😇🤗😉
+> Happy Birthday 🎊❤️
 
 **Source** See [Appendix - Data Source](#DataSource)
 
-## Data Structure
+## EDA
 
-<a id="DATA"> </a>
+Let's take a quick look at the data.
 
-We obtain two types of data representing the COVID-19 situation.
-* **Test Data**
+* Size: 18,866,900 records
+* 11.1 words per tweet
+3.8 emoji per tweet*
+2,890 Unique Emojis
 
-    * Date
-    * Country (Only for US and Korea)
-    * States (Only for the US)
-    * Number of Test Perform
-    * Number of Test Positive
-    * Number of Test Negative    
-    
-    
-* **Case Data**
+| Word 1 | Word 2 ... Word n-1 | Word n |
+|:------:|:-------------------:|:------:|
+|   9%   |         31%         |   59%  |
 
-    * Date
-    * Country 
-    * States (Only for the US)
-    * Geographical Information
-    * Community (Only for LA County)
-    * Number of Confirmed Case
-    * Number of Death Case
-    * Number of Recovered Case   
-    * Number of Active Case   
-    
-Jump to [EDA](#EDA) if you are not interested in web scraping and data cleaning.
+
+
+Data Collection:                                                                                                 Chart: Project Workflow
+19 million Twitter records contain at least one Emoji
+Web Scraping Emoji “true meaning” from various Emoji website as Ground Truth knowledge
+Text Processing:
+Lower all cases
+Remove punctuation
+Try remove stop words
+Try Stemmer and Lemmetizer
+Model building:
+Processed text into a two-layer Nereul Network called Word2Vec
+Tuned model hyperparameters in a small sample
+Tuned model with text processing techniques in a small sample
+Built 2 Word2Vec algorithms.  CBOW and skip-gram have different advantages in predicting common or rare words.                                           
+Ensembled two algorithms with a threshold to determine which word is frequent.
+The final Model recorded 62% accuracy in predicting the Ground Truth, improved 55% compared to baseline(7%).
+Web APP:
+Built a real-time translation Web App with Dash
+Published on an AWS EC2 instance
+Collecting user feedback into SQL database which able us to adjust the model regularly
 
 ## Data acquisition
 <a id="Dataacquisition"> </a>
@@ -122,7 +146,10 @@ Jump to [EDA](#EDA) if you are not interested in web scraping and data cleaning.
 
 ### From data
 
-* a
+* Not limited to the original meaning, people use Emoji creatively, for instance, the emoji 🍆 is often used in flirting. 
+Tuning in the text processing steps is as crucial as tuning model hyperparameter in this NLP analysis.
+The ensemble method is a solution to make bad predictors into a better one when advanced methods are not applicable. (RNN text generator requires TB level memory since we had 3000 more characters which usually 26+10)
+
 
 ### Technically:
 
@@ -141,13 +168,4 @@ Jump to [EDA](#EDA) if you are not interested in web scraping and data cleaning.
 - **EmojifyData-EN: English tweets, with emojis**
 
     source: https://www.kaggle.com/rexhaif/emojifydata-en Collected by Daniil Larionov
-
----------------------------------
-
-**Links**
-
-* A: https://github.com/constiny/COVID19
-
-* B: https://github.com/constiny/COVID19/blob/master/covid19.ipynb
-
 
