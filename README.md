@@ -5,8 +5,6 @@ By Vince Pan
 
 -----------------
 
-
-
 # Table of Contents📝
 
 [1. Background](#motivation)<br> 
@@ -87,16 +85,14 @@ The usage of a Ground Truth in building a translator is to benchmark how well yo
 
 Our Ground Truth data was webscraping from various emoji set which has their own emoji meanings.
 
-For example, ☁️ in Emojipedia.com
-
-has 3 meanings
+For example, ☁️ in Emojipedia.com has 3 meanings
 
 > Cloud, Cloudy, Overcast
 
 We webstraped the meanings for all emojis and set it as our Ground Truth data(Sometimes Grouth Truth Knowledge). We say the prediction is correct if the translate "cloud" to ☁️. The accuracy metric we use later is design as how many percentage of words in the ground Truth data was predicted correctly.
 
 
-**Ground Truth** See [Appendix - Data Source](#DataSource)
+**Ground Truth** See [Appendix - Ground Truth Source](#GTS)
 
 
 ## EDA<a id="EDA"> </a>
@@ -124,11 +120,18 @@ Fun fact: Oxford Dictionaries named 😂 as 2015 Word of the Year.
 
 # Model<a id="model"> </a>
 
-The technique we use in this model is called **Word2Vec** which is a two-layer Nereul Network. In simple, it vectorizes word(corpus) into numerical vectors by exploring the relationship between a target word and the neighborhood words(window). After that, we can find out the most similar emoji and English word.
+The technique we use in this model is called **Word2Vec** which is a two-layer Nereul Network. 
+
 
 > Word2vec is a group of related models that are used to produce word embeddings. These models are shallow, two-layer neural networks that are trained to reconstruct linguistic contexts of words. Word2vec takes as its input a large corpus of text and produces a vector space, typically of several hundred dimensions, with each unique word in the corpus being assigned a corresponding vector in the space. Word vectors are positioned in the vector space such that words that share common contexts in the corpus are located close to one another in the space. -Wikipedia
 
-The word2vec model was developed by Google and easy to run in various language environment. However, it is not a straight foward work to finish well. 
+In short, it vectorizes word(corpus) into numerical vectors by exploring the relationship between a target word and the neighborhood words(window). After that, we can find out the most similar emoji and English word.
+
+For instance, 
+
+<img cloudy>
+
+The word2vec model was developed by Google and easy to run in various language environment. However, it is not a straight foward work to do well. 
 
 
 ## Tuning<a id="model"> </a>
@@ -150,37 +153,49 @@ The difference between them makes them tends to predict common words(CBOW) and r
 
 > Only kids make choice. Adults get both.
 
-Ensembling could help us on that. The idea of ensemble models is we can merge two bad model into a faily good model. The way we ensemble these two model by a threshold determine which word should be frequent and rare.
+Ensembling could help us on that. The idea of ensemble models is we can merge two bad models into a faily well model. The way we ensemble these two model by a threshold determine which word should be frequent and rare.
 
 <ensemble plot>
 
-The final Model recorded 62% accuracy in predicting the Ground Truth, improved 55% compared to baseline(7%).
+The final Model recorded 62% accuracy in predicting the Ground Truth, higher than any single model and improved 55% compared to baseline(7%).
 
-# Go Live<a id="model"> </a>
+----------------
+
+# Go Live<a id="model">
+
+## Dash App
+
+We use `pyDash` package to develop a HTML interface for user type in input and receive output. Dash was built on Python Flask which allow us load any python model without converting language.
+
+Here is output when we published our beta version on a AWS EC2 machine.
+
+<img input-output>
+
+## Feedback Collection
+
+What makes a good model different from a great model is that great model can improve itself. In the content of translation, user feedback could be a our great resource. We create a section under the translation output.
+
+<img feedback>
+
+Those submission would immediately insert into a table in our SQL server on AWS.
 
 ----------------
 
 # Summary<a id="sm"> </a>
 
-----------------
-
 ## Takeaway
 
-### From data
-
 * Not limited to the original meaning, people use Emoji creatively, for instance, the emoji 🍆 is often used in flirting. 
-Tuning in the text processing steps is as crucial as tuning model hyperparameter in this NLP analysis.
-The ensemble method is a solution to make bad predictors into a better one when advanced methods are not applicable. (RNN text generator requires TB level memory since we had 3000 more characters which usually 26+10)
+* Tuning in the text processing steps is as crucial as tuning model hyperparameter in this NLP analysis.
+* The ensemble method is a solution to make bad predictors into a better one when advanced methods are not applicable. (RNN text generator requires TB level memory since we had 3000 more characters which usually 26+10)
 
 
-### Technically:
+## What is next
 
-* b
+* Word base model is not smart enough when people using phrase. 
+* Incorporate user feedbacks to update model
 
-### Projects:
-
-* c
-
+----------------------------------------
 
 # Appendix
 <a id="Appendix"> </a>
@@ -190,4 +205,15 @@ The ensemble method is a solution to make bad predictors into a better one when 
 - **EmojifyData-EN: English tweets, with emojis**
 
     source: https://www.kaggle.com/rexhaif/emojifydata-en Collected by Daniil Larionov
+    
+- **Ground Truth Data Source**
 
+    * Emojipedia: https://emojipedia.org/
+
+    * Hot Emoji: https://hotemoji.com/emoji-meanings.html
+    
+    * Emojis Wiki: https://emojis.wiki/
+    
+    * EmojiTerra: https://emojiterra.com/
+    
+    * The Ultimate Emoji Guide: https://emojiguide.org/
