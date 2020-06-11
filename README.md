@@ -121,7 +121,7 @@ Note: Multiple Emoji connected with each other without space treated as one word
 
 Most Emojis come in the last word of a tweet.
 
-<img src="img/Emoji_freq.png" />
+<img src="img/emoji_freq.png" />
 
 😂 is not only the most frequent Emoji but also has a higher frequency than any English words including "the".
 
@@ -184,7 +184,7 @@ Ensembling could help us with that. The idea of ensemble models is we can merge 
 
 <img src="img/ensemble.png" />
 
-The final Model recorded 62% accuracy in predicting the Ground Truth, higher than any single model, and improved 55% compared to baseline(7%).
+The final Model recorded **62% accuracy** in predicting the Ground Truth, higher than any single model, and improved 55% compared to baseline(7%).
 
 ----------------
 
