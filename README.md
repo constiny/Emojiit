@@ -2,6 +2,12 @@
 
 By Vince Pan
 
+-------------------
+# SEE SLIDE DESK HERE
+
+https://docs.google.com/presentation/d/1BaCZpMjPZr1QrMRH4QlKIwS8HLx05JO-ZIQDvTtfZxU/edit?usp=sharing
+
+
 -----------------
 
 # Table of Contents📝
