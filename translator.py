@@ -1,3 +1,4 @@
+# loaded when flask app need to predict
 import pickle
 import sys
 from src.helper import *
@@ -45,6 +46,7 @@ def ensemble_emoji_prodictor(word, model1, model2, thres):
         else:
             return p1
 
+# for sentense
 def predict_sentense(s):
     notes = [",", ".", "/'", "(" ,")",  '/"', ":", ";", "/", "(", ")", "“", "”", "-", "+", "#", "…", "!", "?"]
     for note in notes:
@@ -65,6 +67,7 @@ def predict_sentense(s):
                 out += " [   ]"
     return out
 
+# for paragraph
 def predict_para(p):
     sl = p.split("\n")
     out = ""
@@ -73,6 +76,7 @@ def predict_para(p):
         out += "\n"
     return out
 
+# using print to output
 print(predict_para(input))
 print(d_out)
 

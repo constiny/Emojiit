@@ -3,17 +3,19 @@ import pandas as pd
 import numpy as np
 import pickle
 
-# move to helper
+
 # load emoji list
 val_df = pd.read_csv("data/emoji_val.csv",index_col=0)
 emoji_list = val_df["emoji"].values.tolist()
 
+# load sort emoji with freq
 with open('pkl/sort_freq.pkl', 'rb') as f:
     sort_freq = pickle.load(f)
 
 non_zero_count = 1436
-thres = 0.44
+thres = 0.91
 
+# standard text preprocess
 def data_input_preprocess(filename):
     # read
     sample = open(filename, "r") 
@@ -29,6 +31,7 @@ def data_input_preprocess(filename):
         f = f.replace(emoji, emoji+" ")
     return f
 
+# tokenize
 def data_tokenize(f):
     data = [] 
     # iterate through each sentence in the file 
@@ -42,16 +45,8 @@ def data_tokenize(f):
         data.append(temp)
     return data
         
-# move to helper
-# def emoji_prodictor(word, model):
-#     if word in model.wv:
-#         sim = model.most_similar(word,topn=75)
-#         for i in sim:
-#             if i[0] in emoji_list:
-#                 return i[0]
 
-#     return word
-
+# basic predictor
 def emoji_prodictor(word, model):
     if word in model.wv:
         sim = model.most_similar(word,topn=60)
@@ -100,6 +95,7 @@ def word2vec_score(val_dict, model):
                     total_predicts += 1
     return correct/total_words, correct/total_predicts, words
             
+# define weighted score function 
 def word2vec_weighted_score(val_dict, model,emoji_frequency):
     total_words = 0
     total_weighted = 0
@@ -128,7 +124,7 @@ def emoji_prodictor_restricted(word, model, thres_n_word=75, thres_corr=0):
             return i[0]
     return word
 
-
+# define emsemnle score function 
 def word2vec_score_emsemble(val_dict,model1, model2, thres):
     total_words = 0
     total_predicts = 0
