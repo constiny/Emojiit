@@ -98,7 +98,7 @@ For example, ☁️ in Emojipedia.com has 3 meanings
 
 > Cloud, Cloudy, Overcast
 
-We web scraped the meanings for all Emojis and set it as our Ground Truth data(Sometimes Ground Truth Knowledge). We say the prediction is correct if the translate "cloud" to ☁️. The accuracy metric we use later designs as how many percentages of words in the Ground Truth data was predicted correctly.
+We web scraped the meanings for all Emojis and set it as our Ground Truth data(Sometimes Ground Truth Knowledge). We say the prediction is correct if the translate "cloud" to ☁️. The accuracy metric we use later designs as how many percentages of words in the Ground Truth data were predicted correctly.
 
 
 **Ground Truth** See [Appendix - Ground Truth Source](#GTS)
