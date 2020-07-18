@@ -1,11 +1,16 @@
+## this files aim to create grouth truth dataset in dictionary
 import pandas as pd
 import pickle
 
+# load the collection csv and emoji list
 val_df = pd.read_csv("data/emoji_val.2csv",index_col=0)
 emoji_list = emoji_set = val_df["emoji"].values.tolist()
 
 val_df["full_desc"] = val_df.full_desc.apply(lambda x: x.strip('][').split(', '))
 val_df["desc2"] = val_df.desc2.apply(lambda x: x.strip('][').split(', ') if isinstance(x,str) else "")
+
+            
+# text process
 
 for i in val_df.index:
     for j in range(len(val_df.full_desc[i])):
@@ -36,23 +41,3 @@ for val in vals:
 with open('val_dict.pickle', 'wb') as handle:
     pickle.dump(val_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
     
-
-## update validation set
-# val_dict2 = dict();
-# for key, value in val_dict.items():
-#     if re.split('[- ]', key) == 1:
-#         a = key.strip('[():“”]')
-#         if a not in val_dict2:
-#             val_dict2[a] = value
-#         else:
-#             val_dict2[a].append(value)
-#     else:
-#         for i in re.split('[- ]', key):
-#             i2 = i.strip('[():“”]')
-#             if i2 not in val_dict2:
-#                 val_dict2[i2] = value
-#             else:
-#                 val_dict2[i2].append(value)
-            
-# with open('val_dict2.pickle', 'wb') as handle:
-#     pickle.dump(val_dict2, handle, protocol=pickle.HIGHEST_PROTOCOL)

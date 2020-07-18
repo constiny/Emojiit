@@ -46,7 +46,7 @@ app.layout = html.Div([
                                                     "font-family": "Lucida Console",
                                                     "text-align": "left" ,
                                                     'width': '60%', 
-                                                    'display': 'inline-block'}), #notice style variable which wants a dict of CSS
+                                                    'display': 'inline-block'}), 
     html.Div(dcc.Dropdown(
                         id='method-dropdown',
                         options=[
@@ -153,6 +153,7 @@ def show_content_for_report(n_clicks):
     Input('intermediate-value', 'value')]
 )
 def thanks_for_feedback(n_clicks, value):
+    # collect feedback when user 1st click and send to sql server
     if n_clicks == 1:
         print(value[0].split(" - "))
         print(type(value))
